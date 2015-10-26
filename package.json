@@ -1,0 +1,20 @@
+{
+  "name": "ZZWX",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+	"start": "node app.js"
+  },
+  "dependencies": {
+	  "express"					: "latest",
+	  "eventproxy"				: "latest",
+	  "body-parser"				: "latest",
+	  "morgan"					: "latest",
+	  "swig"					: "latest",
+	  "formidable"				: "latest",
+	  "serve-favicon"			: "latest",
+	  "sequelize"				: "latest",
+	  "mysql"					: "latest",
+	  "q"						: "latest"
+  }
+}
