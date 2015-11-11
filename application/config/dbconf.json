@@ -1,0 +1,24 @@
+{
+  "DEV": {
+    "username": "xxxx",
+    "password": "xxxx",
+    "database": "xxxx",
+    "host": 	"xxxx",
+    "dialect": 	"mysql",
+    "port":		"xxxx",
+    "dialectOptions" : {
+      "insecureAuth": "true"
+    }
+  },
+  "PRO": {
+    "username": "xxxx",
+    "password": "xxxx",
+    "database": "xxxx",
+    "host": 	"xxxx",
+    "dialect": 	"mysql",
+    "port":		"xxxx",
+    "dialectOptions" : {
+      "insecureAuth": "true"
+    }
+  }
+}
