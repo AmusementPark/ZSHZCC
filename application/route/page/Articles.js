@@ -5,6 +5,7 @@
 //======================================================================================
 var zzrequire = require('zzrequire');
 var ArticlesHelper = zzrequire('db/helper/Articles');
+var RedisHelper = zzrequire('db/redis/RedisHelper');
 //======================================================================================
 exports.Articles = function(req, res, next) {
 	
@@ -16,8 +17,14 @@ exports.Articles = function(req, res, next) {
 		return res.status(404);
 	}
 	
-	ArticlesHelper.getList(clazz).then(function(list) {
+	//ArticlesHelper.getList(clazz).then(function(list) {
+	//	return res.render(clazz, {articles:list});
+	//});
+
+	RedisHelper.ArticleRedisHelper.getList(
+		req.params.clazz
+	).then(function(list) {
 		return res.render(clazz, {articles:list});
-	})
+	});
 };
 //======================================================================================

@@ -123,4 +123,3 @@ ngApp.controller('zzGotoTop', ['$scope', '$element', '$document', function($scop
 //	    $document.scrollToElement(someElement, offset, duration);
 	}
 }]);
-

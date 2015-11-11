@@ -15,6 +15,7 @@
 	  "serve-favicon"			: "latest",
 	  "sequelize"				: "latest",
 	  "mysql"					: "latest",
-	  "q"						: "latest"
+	  "q"						: "latest",
+	  "redis"					: "latest"
   }
 }

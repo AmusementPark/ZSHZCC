@@ -98,7 +98,8 @@ var getList = function(clazz, offset) {
 			CLAZZ : clazzMapping(clazz),
 		},
 		order : [
-		    ['DATE', 'DESC']
+			/*['DATE', 'DESC']*/
+		    ['ID', 'DESC']
 		],
 		include : [{
 			model: models.ARTICLE_EXT,

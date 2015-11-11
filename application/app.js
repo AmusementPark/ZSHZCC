@@ -41,26 +41,3 @@ app.listen(8099, function(){
 	console.log('SERVER STARTED!');
 });
 //======================================================================================
-
-/**
-drop table if EXISTS `ARTICLE`;
-create table ARTICLE (
-	`ID` 			INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	`HEAD` 		VARCHAR(300) NOT NULL,
-	`BODY`	 	TEXT NOT NULL,
-	`AUTH` 		INT NOT NULL,
-	`DATE`		TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-drop table if EXISTS `MANAGER`;
-create table `MANAGER` (
-	`ID`			INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	`MGRNAME` VARCHAR(32) NOT NULL
-) AUTO_INCREMENT=100000;
-
-INSERT INTO `MANAGER` (`MGRNAME`) VALUES ('朱盛浩');
-INSERT INTO `MANAGER` (`MGRNAME`) VALUES ('周纯晨');
-INSERT INTO `ARTICLE` (`HEAD`, `BODY`, `AUTH`) VALUES ('杭州市浙江工业大学','我们在这里哈哈哈哈哈哈哈哈哈哈哈哈',100000);
-INSERT INTO `ARTICLE` (`HEAD`, `BODY`, `AUTH`) VALUES ('杭州市浙江工业大学','我们在这里哈哈哈哈哈哈哈哈哈哈哈哈',100001);
-INSERT INTO `ARTICLE` (`HEAD`, `BODY`, `AUTH`) VALUES ('杭州市浙江工业大学','我们在这里哈哈哈哈哈哈哈哈哈哈哈哈',100000);
-INSERT INTO `ARTICLE` (`HEAD`, `BODY`, `AUTH`) VALUES ('杭州市浙江工业大学','我们在这里哈哈哈哈哈哈哈哈哈哈哈哈',100001);
-*/

@@ -10,8 +10,7 @@ module.exports = function(sequelize, DataTypes) {
 	    	primaryKey: true
 	    },
 	    NAME	: DataTypes.STRING(80),
-	    PSWD	: DataTypes.STRING(80),
-	    PRIORITY: DataTypes.INTEGER.UNSIGNED
+	    PSWD	: DataTypes.STRING(80)
 	}, {
 		paranoid: true,
 		timestamps: false,
