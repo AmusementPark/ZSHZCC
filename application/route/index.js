@@ -2,16 +2,20 @@
 var router    = require("express").Router();
 var zzrequire = require('zzrequire');
 
-//var Article    = zzrequire('route/page/Article');
-var Articles    = zzrequire('route/page/Articles');
+var ArticlePage = zzrequire('route/page/ArticlePage');
+var RootPage    = zzrequire('route/page/RootPage');
+
 var ArticlesApi = zzrequire('route/rest/Articles');
 //======================================================================================
 // PAGE REQUEST
-router.get('/articles/:clazz', Articles.Articles);
-//router.get('/articles/:tag/:arti_id', Article.Article);
+router.get('/life', RootPage.life);
+router.get('/work', RootPage.work);
+router.get('/like', RootPage.like);
+router.get('/article/:clazz/:artid', ArticlePage.Article);
 //--------------------------------------------------------------------------------------
 // REST API
 router.post('/api/articles', ArticlesApi.getList);
+//router.post('/api/articles/like', ArticlesApi.likeIt);
 //======================================================================================
 module.exports = router;
 //======================================================================================

@@ -1,7 +1,7 @@
 
 angular.module("template/articlelist/articleitem.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/articlelist/articleitem.html",
-	'<a href="{{article.link}}" class="list-group-item zz-list-group-item animated slideInRight">\n' +
+	'<a href="{{article.link}}" class="list-group-item zz-list-group-item animated slideInRight" target="_blank">\n' +
 	'	<h3 class="list-group-item-head">{{article.head}}</h3>\n'+
 	'	<div>\n'+
 	'		<img src="/img/artilogo.jpg" class="zz-list-group-item-logo">\n'+

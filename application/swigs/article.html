@@ -21,10 +21,6 @@
 	          <a class="navbar-brand" href="#">ZSH❤ZCC</a>
 	        </div>
 	        <div class="navbar-collapse collapse">
-<!-- 	          	<ul class="nav navbar-nav">
-		            <li><a href="#our_life">生活</a></li>
-		            <li><a href="#our_work">工作</a></li>
-	          	</ul> -->
 	          	<ul class="nav navbar-nav navbar-right">
 	          		<li><a href="/life">生活</a></li>
 		            <li><a href="/work">工作</a></li>
@@ -34,7 +30,7 @@
       	</div>
     </nav>
 
-	<header style="margin-top: 50px;background-color: #f1c633;color: #666;">
+	<header>
 		<div class="container" style="padding:30 0 30 0">
 			<div data-ng-controller="zzTitleCtrl">
       			<div class="row">
@@ -42,10 +38,8 @@
 			        	<img data-ng-src="{{avatar}}" style="height:200px;" class="img-circle img-thumbnail">
 			        </div>
 			        <div class="col-md-6 hidden-md hidden-xs" style="text-align:left">
-			        	<h1>"伊卡洛斯"计划</h1>
-				        <blockquote>
-						  	<p>两岸猿声啼不住，一枝红杏出墙来。</p>
-						</blockquote>
+			        	<h1>{@ article.head @}</h1>
+                        <h2>{@ article.read @}</h2>
 			        </div>
 			        <div class="col-md-6 hidden-lg hidden-md" style="text-align:center">
 			        	<h1>IKARUS PLAN</h1>
@@ -55,42 +49,42 @@
 		</div>
 	</header>
 
+	<section>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<p class="zz-arti-body">{@ article.body @}</p>
+						<img src="/img/us.jpg" style="width:100%">
+					</div>
+				</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
-	<div class="container" style="margin-top:50px; margin-bottom:50px">
-		<div class="row">
-			<div class="col-md-10 col-md-offset-1">
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2">
-					<p style="text-indent:2em; line-height:28px">据南都记者了解，刘雁南曾在有利网分管网站、产品、技术、营销、品牌公关等业务；吴逸然此前在有利网则主要分管资产端业务，有利网最核心的线下借款方的甄选，就由吴逸然一手掌管。对于最终走上“分家”，刘雁南接受南都记者专访时表示，主要是双方在对有利未来发展理念上不一样。他认为，有利原有的与小贷公司合作的方式，在目前小贷公司已经状况不佳的情况下已经遭遇了一些瓶颈，需要进行调整。而在调整过程中，吴逸然主张收购小贷公司，而他则认为，应该发展消费金融。</p>
-					<img src="/img/us.jpg" style="width:100%">
-					<div id="text-img-div"></div>
-					<img src="/img/demo.jpg" style="width:100%">
-				</div>	
-			</div>
-			</div>
-		</div>
-	</div>
 	<footer>
-		<div style="background-color: #2c3e50;">
-			<div class="container" style="padding: 25px 0;">
-			<div class="row" style="margin-top:20px">
-				<div class="col-md-3 col-md-offset-3" style="text-align:center;color:#fff">
-					<img src="/img/zsh-wx.jpg" style="width:50%">
-					<p style="line-height:30px">微信</p>
-				</div>
-				<div class="col-md-3" style="text-align:center;color:#fff">
-					<img src="/img/zsh-qq.jpg" style="width:50%">
-					<p style="line-height:30px">QQ</p>
+		<div class="zz-footer-1st-layer">
+			<div class="container">
+				<div class="row" style="margin-top:20px">
+					<div class="col-md-3 col-md-offset-3 zz-footer-1st-layer-qr">
+						<img src="/img/zsh-wx.jpg">
+						<p>微信</p>
+					</div>
+					<div class="col-md-3 zz-footer-1st-layer-qr">
+						<img src="/img/zsh-qq.jpg">
+						<p>QQ</p>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div style="background-color: #233140;">
-		<div>
-			<div class="container" style="padding: 25px 0;">
-			<div class="row">
-				<div ng-controller="zzCopyRight" class="col-lg-12" style="color:#fff;text-align:center">Copyright © ZSH❤ZCC {{year}}</div>
+		<div class="zz-footer-2nd-layer">
+			<div class="container">
+				<div class="row">
+					<div ng-controller="zzCopyRight" class="col-lg-12 zz-footer-2nd-layer-txt">Copyright © ZSH❤ZCC {{year}}</div>
+				</div>
 			</div>
-		</div>
 		</div>
 	</footer>
 </body>

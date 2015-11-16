@@ -12,11 +12,16 @@ exports.getList = function(req, res, next) {
 	//	return res.send(data);
 	//});
 
-	RedisHelper.ArticleRedisHelper.getList(
+	RedisHelper.ArticleHelper.getList(
 		req.body.clazz,
 		req.body.offset
 	).then(function(list) {
 		return res.send(list);
+	});
+};
+exports.newArticle = function(req, res, next) {
+	ArticleHelper.newOne().then(function() {
+		res.end();
 	});
 };
 //======================================================================================

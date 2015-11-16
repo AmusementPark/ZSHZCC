@@ -4,27 +4,22 @@
 // http://www.zshzcc.com/articles/hobby	->GET
 //======================================================================================
 var zzrequire = require('zzrequire');
-var ArticlesHelper = zzrequire('db/helper/Articles');
 var RedisHelper = zzrequire('db/redis/RedisHelper');
 //======================================================================================
-exports.Articles = function(req, res, next) {
-	
+exports.Article = function(req, res, next) {
+
 	var clazz = req.params.clazz;
-	
+	var artid = req.params.artid;
+
 	if (clazz != 'life' &&
 		clazz != 'work' &&
 		clazz != 'like') {
-		return res.status(404);
+		return res.status(404).end();
 	}
-	
-	//ArticlesHelper.getList(clazz).then(function(list) {
-	//	return res.render(clazz, {articles:list});
-	//});
 
-	RedisHelper.ArticleRedisHelper.getList(
-		req.params.clazz
-	).then(function(list) {
-		return res.render(clazz, {articles:list});
+	RedisHelper.ArticleHelper.getOneDetail(clazz, artid).then(function(article) {
+		return res.render('article', {article:article});
 	});
+
 };
 //======================================================================================

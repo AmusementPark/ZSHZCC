@@ -44,18 +44,28 @@ var clazzMapping = function(/*string*/ clazz) {
 //		});
 //	});
 //};
+var getIDs = function(clazz) {
+	var _ =
+		models.ARTICLE.findAll({
+			order : [
+				['ID', 'DESC']
+			],
+			where : {
+				CLAZZ : clazzMapping(clazz)
+			},
+			attributes : ['ID']
+		});
+	return _;
+};
 /**
  * @args - id #Article ID
  */
 var getOne = function(id) {
-	var defer = Q.defer();
+	var d = Q.defer();
 	models.ARTICLE.findAll({
 		where : {
-			ID : args.id
+			ID : id
 		},
-		order : [
-		    ['DATE', 'DESC']
-		],
 		include : [{
 			model: models.ARTICLE_EXT,
 			as : 'A',
@@ -81,15 +91,15 @@ var getOne = function(id) {
 				like : arti.A.LIKE
 			});
 		});
-		defer.resolve(arts);
+		d.resolve(arts);
 	});
-	return defer.promise;
+	return d.promise;
 };
 /**
  * @args 
  */
 var getList = function(clazz, offset) {
-	var defer = Q.defer();
+	var d = Q.defer();
 	offset = offset || 0;
 	models.ARTICLE.findAll({
 		limit : 4,
@@ -108,10 +118,11 @@ var getList = function(clazz, offset) {
 		},{
 			model: models.MANAGER,
 			attributes: ['NAME']
-		}],
-		attributes: { 
-			exclude: ['BODY'] 
-		}
+		}]
+		//,
+		//attributes: {
+		//	exclude: ['BODY']
+		//}
 	}).then(function(artis) {
 		var arts = [];
 		artis.forEach(function(arti) {
@@ -120,6 +131,7 @@ var getList = function(clazz, offset) {
 				logo : arti.LOGO,
 				head : arti.HEAD,
 				abst : arti.ABSTRACT,
+				body : arti.BODY,
 				author : arti.MANAGER.NAME, 
 				clazz: arti.CLAZZ,
 				tag  : arti.TAG,
@@ -128,13 +140,57 @@ var getList = function(clazz, offset) {
 				like : arti.A.LIKE
 			});
 		});
-		defer.resolve(arts);
+		d.resolve(arts);
 	});
-	return defer.promise;
+	return d.promise;
+};
+/**
+ * @args
+ */
+var newOne = function() {
+	var _ =
+	Q.fcall(function(){
+		var d =
+		models.ARTICLE.create({
+			LOGO:"http://www.zshzcc.com/img/arti.png",
+			HEAD:"SEQUELIZE测试添加",
+			ABSTRACT:"浙江工业大学是我的母校哈哈哈哈哈哈哈嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈啊哈",
+			BODY:"SEQUELIZE测试添加, 使用SEQUELIZE ORM框架",
+			AUTHOR:"100000",
+			CLAZZ:"2",
+			TAG:"JavaScript"
+		});
+		return d;
+	}).then(function(arti){
+		var d =
+		models.ARTICLE_EXT.create({
+			ARTI_ID	: arti.ID,
+			READ	: 0,
+			LIKE	: 0
+		});
+		return d;
+	});
+	return _;
+};
+/**
+ * @args
+ */
+var deleteOne = function(id) {
+	var d = Q.defer();
+	models.ARTICLE.destroy({
+		where : {
+			ID: id
+		}
+	}).then(function() {
+		d.resolve();
+	});
+	return d.promise;
 };
 //======================================================================================
 exports.getOne  = getOne;
 exports.getList = getList;
+exports.newOne  = newOne;
+exports.getIDs  = getIDs;
 exports.CLASS = {
 	LIFE : 1,
 	WORK : 2,

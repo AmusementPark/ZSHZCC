@@ -4,94 +4,117 @@
 //var redis = null;
 //var sequelize = null;
 //======================================================================================
-var zzrequire       = require('zzrequire');
-var redisconf       = zzrequire('config/redisconf.json');
+var zzrequire = require('zzrequire');
+var redisconf = zzrequire('config/redisconf.json');
 var ArticleMySQLHelper = zzrequire('db/helper/Articles');
 //--------------------------------------------------------------------------------------
-var redis           = require('redis').createClient(redisconf);
-var Q               = require('q');
+var redis = require('redis').createClient(redisconf);
+var Q     = require('q');
 //--------------------------------------------------------------------------------------
 redis.on('error', function (err) {
     console.log('error event - ' + redis.host + ':' + redis.port + ' - ' + err);
 });
+
 //--------------------------------------------------------------------------------------
-// ARTICLES
-//     |  -- ID
-//     |      | -- HEAD
-//     |      | -- BODY
-//     |      | -- LOGO
-//     |      | -- ...
-//     |  -- ID
-//     |      | ...
-var ArticleRedisHelper = function () {
+var ArticleHelper = function () {
     this.ArticleIDSet  = "ArticleIDSet";
     this.ArticlePrifix = "ARTICLE";
     this.isNoMore = false;
     this.ArticlesOnceRequestNum = 4;
 };
-ArticleRedisHelper.prototype.getOne = function(idx) {
+//--------------------------------------------------------------------------------------
+ArticleHelper.prototype.getOne = function(clazz, artid) {
     var that = this;
-    redis.hget("ARTICLES:ID1000000", ["HEAD"], function(err, res) {
-        console.log(res);
-    });
-};
-ArticleRedisHelper.prototype.getList = function(clazz, offset) {
-    offset = offset || 0;
-
-    var that = this;
-    function addArticles(items) {
-        var _ = [];
-        items.forEach(function(item){
-            var d = Q.defer();
-            redis.zadd(that.ArticleIDSet, [1, item.link], function(err, res) {
-                redis.hset(that.ArticlePrifix+item.link, [that.ArticlePrifix, JSON.stringify(item)],
-                function(err, res) {
-                    d.resolve(item.link);
-                })
-            });
-            _.push(d.promise);
-        });
-        return Q.all(_);
-    };
-    return Q.fcall(function(){
-        var d = Q.defer();
-        redis.zrevrange([that.ArticleIDSet, offset, offset+that.ArticlesOnceRequestNum-1],
-        function(err, res) {
-            if( res.length < that.ArticlesOnceRequestNum && !that.isNoMore){
-                // Try to read from MySQL
-                ArticleMySQLHelper.getList(clazz, offset).then(
-                function(list){
-                    console.log(list.length);
-                    if( list.length < that.ArticlesOnceRequestNum )
-                        that.isNoMore = true;
-                    addArticles(list).then(function(result) {
-                        console.log(result);
-                        d.resolve(result);
-                    });
+    var d = Q.defer();
+    redis.hget(that.ArticlePrifix+artid, [that.ArticlePrifix], function(err, res) {
+        if (res == null) {
+            ArticleMySQLHelper.getOne(artid).then(function(item) {
+                var json = item[0];
+                    json.link = 'article/'+clazz+'/'+json.link;
+                redis.hset(that.ArticlePrifix+artid, [that.ArticlePrifix, JSON.stringify(json)], function(err, res) {
+                    d.resolve(json);
                 });
-            }
-            else {
-                console.log('OK, find '+that.ArticlesOnceRequestNum+' Articles');
-                d.resolve(res);
-            }
-        });
-        return d.promise;
-    }).then(function(ids){
-        var _ = [];
-        ids.forEach(function(id){
-            var d = Q.defer();
-            redis.hget(that.ArticlePrifix+id, [that.ArticlePrifix], function(err, res){
-                var json = JSON.parse(res)
-                d.resolve(json);
             });
-            _.push(d.promise);
-        });
-        return Q.all(_);
+        } else {
+            d.resolve(JSON.parse(res));
+        }
     });
+    return d.promise;
 };
+//--------------------------------------------------------------------------------------
+ArticleHelper.prototype.getOneDetail = function(clazz, artid) {
+    var that = this;
+    var d = Q.defer();
+    that.getOne(clazz, artid).then(function(json) {
+        json.read++;
+        redis.hset(that.ArticlePrifix+artid, [that.ArticlePrifix, JSON.stringify(json)], function(err, res) {
+            d.resolve(json);
+        });
+    });
+    return d.promise;
+};
+//--------------------------------------------------------------------------------------
+/**
+ *
+ * @param clazz
+ * @param offset
+ * @returns {*}
+ */
+ArticleHelper.prototype.getList = function(clazz, offset) {
+    offset = offset || 0;
+    var that = this;
+    var d = Q.defer();
 
-var instance = new ArticleRedisHelper();
-exports.ArticleRedisHelper = instance;
+    redis.zrevrange([that.ArticleIDSet+clazz, offset, offset+that.ArticlesOnceRequestNum-1], function(err, res) {
+        var _ = [];
+        res.forEach(function(artid) {
+            _.push(that.getOne(clazz, artid));
+        });
+        Q.all(_).then(function(artis) {
+            d.resolve(artis);
+        });
+    });
+
+    return d.promise;
+};
+//--------------------------------------------------------------------------------------
+// 删除文章, 订阅方式接收消息
+ArticleHelper.prototype.delete = function() {
+
+};
+//--------------------------------------------------------------------------------------
+// 初始化载入全部文章ID. 按新旧排序
+ArticleHelper.prototype.init = function() {
+    var that = this;
+    var _ = [];
+    ['life', 'work', 'like'].forEach(function(clazz) {
+        var p =
+        ArticleMySQLHelper.getIDs(clazz).then(function (artis) {
+            if( artis.length == 0 ) {
+                return null;
+            }
+            var done = 0,
+                d = Q.defer();
+            // 计数. 等全部插入到了REDIS之后发送准备好了消息
+            artis.forEach(function(arti) {
+                redis.zadd(that.ArticleIDSet+clazz, [1, arti.ID], function(err, res) {
+                    done++;
+                    if (done == artis.length) {
+                        d.resolve();
+                    }
+                });
+            });
+            return d.promise;
+        });
+        if ( p != null ) {
+            _.push(p);
+        }
+    });
+    return Q.all(_);
+};
+//--------------------------------------------------------------------------------------
+var _01 = new ArticleHelper();
+exports.ArticleHelper = _01;
 
 //module.exports = init;
 //
