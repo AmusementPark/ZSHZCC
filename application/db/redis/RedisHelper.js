@@ -4,11 +4,15 @@
 //var redis = null;
 //var sequelize = null;
 //======================================================================================
+var bluebird  = require('bluebird');
 var zzrequire = require('zzrequire');
 var redisconf = zzrequire('config/redisconf.json');
 var ArticleMySQLHelper = zzrequire('db/helper/Articles');
 //--------------------------------------------------------------------------------------
-var redis = require('redis').createClient(redisconf);
+var rediz = require('redis');
+    bluebird.promisifyAll(rediz.RedisClient.prototype);
+    bluebird.promisifyAll(rediz.Multi.prototype);
+var redis = rediz.createClient(redisconf);
 var Q     = require('q');
 //--------------------------------------------------------------------------------------
 redis.on('error', function (err) {
@@ -19,7 +23,6 @@ redis.on('error', function (err) {
 var ArticleHelper = function () {
     this.ArticleIDSet  = "ArticleIDSet";
     this.ArticlePrifix = "ARTICLE";
-    this.isNoMore = false;
     this.ArticlesOnceRequestNum = 4;
 };
 //--------------------------------------------------------------------------------------
@@ -74,17 +77,17 @@ ArticleHelper.prototype.getList = function(clazz, offset) {
             d.resolve(artis);
         });
     });
-
     return d.promise;
 };
 //--------------------------------------------------------------------------------------
 // 删除文章, 订阅方式接收消息
+// 为了保证不出现位序错误. 删除掉的文章仅为逻辑删除(隐藏)
 ArticleHelper.prototype.delete = function() {
 
 };
 //--------------------------------------------------------------------------------------
 // 初始化载入全部文章ID. 按新旧排序
-ArticleHelper.prototype.init = function() {
+ArticleHelper.prototype.init_ = function() {
     var that = this;
     var _ = [];
     ['life', 'work', 'like'].forEach(function(clazz) {
@@ -96,6 +99,7 @@ ArticleHelper.prototype.init = function() {
             var done = 0,
                 d = Q.defer();
             // 计数. 等全部插入到了REDIS之后发送准备好了消息
+            // 不存在ID的情况下, 插入一条特殊的ID? 来建立起数据结构
             artis.forEach(function(arti) {
                 redis.zadd(that.ArticleIDSet+clazz, [1, arti.ID], function(err, res) {
                     done++;
@@ -106,11 +110,42 @@ ArticleHelper.prototype.init = function() {
             });
             return d.promise;
         });
-        if ( p != null ) {
-            _.push(p);
-        }
+        if ( p != null ) _.push(p);
     });
     return Q.all(_);
+};
+//--------------------------------------------------------------------------------------
+ArticleHelper.prototype.init = function() {
+    var that = this;
+    var _ = [];
+    ['life', 'work', 'like'].forEach(function(clazz) {
+        var p =
+            ArticleMySQLHelper.getIDs(clazz).then(function (artis) {
+                if( artis.length == 0 ) {
+                    return null;
+                }
+                // 计数. 等全部插入到了REDIS之后发送准备好了消息
+                // 不存在ID的情况下, 插入一条特殊的ID? 来建立起数据结构
+                var __ = [];
+                artis.forEach(function(arti) {
+                    __.push(redis.zaddAsync(that.ArticleIDSet+clazz, [1, arti.ID]));
+                });
+                return bluebird.all(__);
+            });
+        if ( p != null ) _.push(p);
+    });
+    return Q.all(_);
+};
+//
+ArticleHelper.prototype.async = function() {
+    var that = this;
+    var d = bluebird.defer();
+    d.then(function(val){
+       console(val);
+    });
+    setTimeout(function(){
+        d.resolve(100);
+    }, 0);
 };
 //--------------------------------------------------------------------------------------
 var _01 = new ArticleHelper();

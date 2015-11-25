@@ -86,6 +86,7 @@ var getOne = function(id) {
 				author : arti.MANAGER.NAME,
 				clazz: arti.CLAZZ,
 				tag  : arti.TAG,
+				active : arti.ACTIVE,
 				date : arti.DATE.pattern('yyyy-MM-dd'),
 				read : arti.A.READ,
 				like : arti.A.LIKE
@@ -135,6 +136,7 @@ var getList = function(clazz, offset) {
 				author : arti.MANAGER.NAME, 
 				clazz: arti.CLAZZ,
 				tag  : arti.TAG,
+				active : arti.ACTIVE,
 				date : arti.DATE.pattern('yyyy-MM-dd'),
 				read : arti.A.READ,
 				like : arti.A.LIKE

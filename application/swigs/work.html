@@ -13,6 +13,12 @@
 	<script type="text/javascript" src="/js/utils.js"></script>
 	<script type="text/javascript" src="/js/artilist.js"></script>
 	<script type="text/javascript" src="/js/templates.js"></script>
+
+	<script>
+		var x = {
+			me : {@ me.we @}
+		};
+	</script>
 </head>
 <body data-ng-app="zz.app.artilist">
 	<a ng-controller="zzScrollTop" ng-click="scrollTop()" href="#" class="zz-gototop hidden-sm hidden-xs"><i class="glyphicon glyphicon-chevron-up"></i></a>
@@ -29,8 +35,8 @@
 	        </div>
 	        <div class="navbar-collapse collapse">
 	          	<ul class="nav navbar-nav navbar-right">
-	          		<li><a href="/articles/life">生活</a></li>
-		            <li><a href="/articles/work">工作</a></li>
+	          		<li><a href="/life">生活</a></li>
+		            <li><a href="/work">工作</a></li>
 		            <li><a href="#">爱好</a></li>
 	          	</ul>
 	        </div>

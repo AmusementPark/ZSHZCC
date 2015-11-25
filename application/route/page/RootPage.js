@@ -17,7 +17,7 @@ var life = function(req, res, next) {
 //--------------------------------------------------------------------------------------
 var work = function(req, res, next) {
     RedisHelper.ArticleHelper.getList('work').then(function(list) {
-        return res.render('work', {articles:list});
+        return res.render('work', {articles:list, me:{we:1000}});
     });
 };
 //--------------------------------------------------------------------------------------
@@ -25,7 +25,9 @@ var like = function(req, res, next) {
 
 };
 
-RedisHelper.ArticleHelper.init();
+RedisHelper.ArticleHelper.init().then(function(){
+    RedisHelper.ArticleHelper.async();
+});
 //--------------------------------------------------------------------------------------
 module.exports = {
     'life':life,

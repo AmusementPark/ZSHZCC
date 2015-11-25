@@ -7,7 +7,6 @@
   },
   "dependencies": {
 	  "express"					: "latest",
-	  "eventproxy"				: "latest",
 	  "body-parser"				: "latest",
 	  "morgan"					: "latest",
 	  "swig"					: "latest",
@@ -16,6 +15,7 @@
 	  "sequelize"				: "latest",
 	  "mysql"					: "latest",
 	  "q"						: "latest",
-	  "redis"					: "latest"
+	  "redis"					: "latest",
+	  "bluebird"                : "latest"
   }
 }

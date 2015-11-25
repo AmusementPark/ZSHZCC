@@ -16,6 +16,7 @@ module.exports = function(sequelize, DataTypes) {
 	    AUTHOR	: DataTypes.INTEGER.UNSIGNED,
 	    CLAZZ	: DataTypes.INTEGER.UNSIGNED,
 	    TAG		: DataTypes.STRING(50),
+		ACTIVE  : DataTypes.INTEGER.UNSIGNED,
 	    DATE	: DataTypes.DATE
 	}, {
 		paranoid: true,
